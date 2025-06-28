@@ -13,11 +13,11 @@ A web-based platform that digitizes and streamlines the onboard experience for c
 - [System Modules](#system-modules)
 - [Firebase Collections](#firebase-collections)
 - [Code Structure](#code-structure)
+- [HTML Page Descriptions](#Page Description)
 - [Role-Based Pages](#role-based-pages)
-- [Screenshots](#screenshots)
 - [Future Enhancements](#future-enhancements)
 - [Conclusion](#conclusion)
-- [HTML Page Descriptions](#Page Description)
+
 
 ---
 
@@ -88,7 +88,6 @@ Traditionally, passengers used physical communication like walkie-talkies to acc
 - `partyHallBookings`
 - `validVoyagers`
 
-> ✅ Firebase project access provided for reviewers: `hello@unifiedmentor.com`
 
 ---
 
@@ -110,8 +109,7 @@ Traditionally, passengers used physical communication like walkie-talkies to acc
 └── assets/                   # Images, icons, CSS, JS
 
 
-
-
+---
 
 ##📄 HTML Page Descriptions
 1. index.html
@@ -164,6 +162,43 @@ Lists all catering orders placed by voyagers.
 
 9. supervisor_stationery.html
 Displays stationery orders along with time, user, and total.
+
+
+---
+
+##🔐 Role-Based Pages
+These pages are not publicly linked in the main UI and are accessed through secure direct URLs. Each role-specific page is designed for internal staff operations only:
+-admin.html – Admin Dashboard to manage catering and stationery items, and register voyager IDs
+-add_voyager_id.html - Admin adds valid Voyager IDs to Firestore so users can register.
+-manager.html – Manager Dashboard to view all bookings (movies, fitness, salon, resort, party hall)
+-head-cook.html – Head Cook Dashboard to view all catering orders placed by voyagers
+-supervisor_stationery.html – Supervisor Dashboard to view stationery requests by voyagers
+This structure ensures separation between voyager-facing UI and staff-facing controls.
+
+---
+
+##🚀 Future Enhancements
+The project is structured to support scalable future upgrades, including:
+💳 Payment Gateway Integration for prepaid services
+⭐ Ratings and Feedback System for each service
+🔔 Real-Time Notifications to update users instantly
+🌐 Multilingual Support for global user experience
+📶 Offline Mode with Sync using service workers
+📊 Admin Analytics Dashboard with graphs and trends
+📱 Mobile App Version for Android/iOS
+🤖 AI-based Suggestions for recommending services based on history
+
+
+---
+
+##Conclusion
+✅ Delivers a smooth, app-like booking experience to voyagers
+✅ Simplifies management for cruise ship staff through role-based dashboards
+✅ Uses Firebase for real-time database sync and secure authentication
+✅ Modular structure allows easy maintenance and scalable future development
+✅ Successfully bridges communication gaps between voyagers and onboard services
+
+
 
 
    
