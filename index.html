@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cruise Ship Management System</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #2980b9, #6dd5fa);
+      color: white;
+      margin: 0;
+      padding: 0;
+    }
+
+    .home-container {
+      text-align: center;
+      padding-top: 50px;
+    }
+
+    .home-container h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+
+    .description {
+      font-size: 1.2rem;
+      max-width: 700px;
+      margin: 0 auto 30px;
+      line-height: 1.6;
+    }
+
+    .nav-links {
+      margin-top: 20px;
+    }
+
+    .nav-links a {
+      display: inline-block;
+      background-color: white;
+      color: #2980b9;
+      padding: 12px 24px;
+      margin: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 25px;
+      transition: 0.3s;
+    }
+
+    .nav-links a:hover {
+      background-color: #f1c40f;
+      color: black;
+    }
+
+    .section-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      padding: 40px;
+    }
+
+    .section {
+      flex: 1 1 300px;
+      max-width: 350px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+
+    .section h2 {
+      margin-bottom: 10px;
+      font-size: 1.6rem;
+    }
+
+    .section p {
+      font-size: 1rem;
+      margin-bottom: 15px;
+    }
+
+    .section img {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      border-radius: 15px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    footer {
+      margin-top: 60px;
+      padding: 20px;
+      font-size: 0.9rem;
+      opacity: 0.8;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="home-container">
+    <h1>🚢 Cruise Ship Management System</h1>
+    <p class="description">
+      Your one-stop platform to access premium onboard services like catering, fitness, stationery, party halls, and more!
+    </p>
+
+    <div class="nav-links">
+      <a href="register.html">📝 Register</a>
+      <a href="login.html">🔐 Login</a>
+    </div>
+  </div>
+
+  <div class="section-container">
+    <div class="section">
+      <h2>🍽️ Catering Orders</h2>
+      <p>Choose from a wide range of gourmet meals, snacks, desserts, and beverages delivered directly to your cabin.</p>
+      <img src="https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=800&q=80" alt="Catering Service">
+    </div>
+
+    <div class="section">
+      <h2>✏️ Stationery Orders</h2>
+      <p>Need notebooks, pens, or drawing kits? Order all your essential supplies while onboard.</p>
+      <img src="https://res.cloudinary.com/purnesh/image/upload/w_1080,f_auto/untitled-11609321216478.jpg" alt="Stationery">
+    </div>
+
+    <div class="section">
+      <h2>💇 Salon Booking</h2>
+      <p>Enjoy beauty and grooming services at our luxurious cruise salon. Book your appointment today.</p>
+      <img src="https://media.istockphoto.com/id/134052142/photo/hair-salon-situation.jpg?s=612x612&w=0&k=20&c=HM4Tl3ATijpIS1Rv097UHwmZ3OfmqGXkniNLuTCqB0A=" alt="Salon">
+    </div>
+
+    <div class="section">
+      <h2>🏋️ Fitness Slots</h2>
+      <p>Stay in shape during your voyage! Book a fitness slot and enjoy state-of-the-art facilities.</p>
+      <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=800&q=80" alt="Fitness Gym">
+    </div>
+
+    <div class="section">
+      <h2>🎬 Movie Booking</h2>
+      <p>Relax and enjoy blockbuster movies with our luxury onboard theater system. Reserve your seats now!</p>
+      <img src="https://akm-img-a-in.tosshub.com/indiatoday/images/story/202501/is-theatre-going-culture-in-india-taking-a-hit-173122208-16x9_0.jpeg?VersionId=lTZShZFILR3qbmiogJGnRUM13Rhb9zC5&size=690:388" alt="Movie Theater">
+    </div>
+
+    <div class="section">
+      <h2>🎉 Party Hall Reservation</h2>
+      <p>Hosting a celebration? Reserve beautifully decorated party halls for birthdays, reunions, and events.</p>
+      <img src="https://c8.alamy.com/comp/BHR7N0/night-party-on-deck-of-cruise-ship-BHR7N0.jpg" alt="Party Hall">
+    </div>
+  </div>
+
+  <footer>
+    © 2025 CruiseShip Co. | All rights reserved
+  </footer>
+</body>
+</html>

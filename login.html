@@ -1,0 +1,46 @@
+<!-- login.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Voyager Login</title>
+  <link rel="stylesheet" href="style.css" />
+  
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+  <script src="firebase.js"></script> <!-- Your Firebase config -->
+</head>
+<body>
+  <div class="login-container">
+    <h2>Voyager Login</h2>
+    <input type="email" id="email" placeholder="Email" required><br>
+    <input type="password" id="password" placeholder="Password" required><br>
+    <button onclick="login()">Login</button>
+  </div>
+
+  <script>
+    function login() {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      if (!email || !password) {
+        alert("Please fill all fields");
+        return;
+      }
+
+      firebase.auth().signInWithEmailAndPassword(email, password)
+        .then(() => {
+          alert("Login successful");
+          window.location.href = "home.html"; // 👈 Redirection after login
+        })
+        .catch((error) => {
+          alert("Login failed: " + error.message);
+        });
+    }
+  </script>
+</body>
+</html>
+

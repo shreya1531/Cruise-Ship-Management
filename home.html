@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Voyager Home</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+  <script src="firebase.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f9ff;
+      color: #1f2937;
+    }
+    .container {
+      display: flex;
+      height: 100vh;
+    }
+    .sidebar {
+      width: 220px;
+      background-color: #0f172a;
+      color: #fff;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .sidebar h2 {
+      color: #facc15;
+    }
+    .sidebar button {
+      background: none;
+      border: none;
+      color: #e0e0e0;
+      text-align: left;
+      padding: 12px 0;
+      font-size: 16px;
+      cursor: pointer;
+      transition: color 0.2s;
+      display: block;
+      width: 100%;
+    }
+    .sidebar button:hover {
+      color: #facc15;
+    }
+    .main {
+      flex: 1;
+      padding: 40px;
+      overflow-y: auto;
+    }
+    .card {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      margin-bottom: 30px;
+    }
+    .card h1 {
+      margin-top: 0;
+      font-size: 32px;
+      color: #1e3a8a;
+    }
+    .card p {
+      font-size: 16px;
+      color: #374151;
+    }
+    .button-group {
+      margin-top: 20px;
+    }
+    .button-group button {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background-color: #2563eb;
+      color: white;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: #f9fafb;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    th, td {
+      border: 1px solid #e5e7eb;
+      padding: 12px;
+      text-align: left;
+    }
+    th {
+      background-color: #2563eb;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="sidebar">
+      <div>
+        <h2>Voyager</h2>
+        <button onclick="showSection('home')">🏡 Home</button>
+        <button onclick="showSection('services')">🛳️ Services</button>
+        <button onclick="showSection('dashboard')">📋 Bookings</button>
+        <button onclick="showSection('profile')">👤 Profile</button>
+      </div>
+      <button onclick="logout()">🚪 Logout</button>
+    </div>
+
+    <div class="main">
+      <div id="homeSection" class="card">
+        <h1>🚢 Cruise Ship Management System</h1>
+        <p>Welcome to the ultimate onboard management platform. Our Cruise Ship Management System empowers voyagers with seamless access to premium cruise services — from booking meals and spa sessions to reserving party venues and fitness slots. It’s designed for ease, elegance, and efficiency.</p>
+
+        <h2>📌 What We Offer</h2>
+        <ul>
+          <li><strong>Personalized Booking Experience:</strong> Easily reserve dining, entertainment, and wellness services.</li>
+          <li><strong>Live Availability:</strong> Real-time updates on available slots and services onboard.</li>
+          <li><strong>Convenient Dashboard:</strong> Manage all your bookings from one unified interface.</li>
+          <li><strong>Secure Voyager Access:</strong> Only verified voyagers can access onboard facilities and make requests.</li>
+        </ul>
+
+        <h2>🌟 Why Choose Us?</h2>
+        <p>From gourmet dining and luxury salon treatments to high-energy fitness classes and family-friendly movie nights, our cruise system transforms your journey into a five-star experience. Explore services, manage reservations, and relax while we take care of the details.</p>
+
+      </div>
+
+      <div id="dashboardSection" class="card" style="display:none">
+        <h1>📋 Bookings</h1>
+        <p>Access booking features and facility management options conveniently from here.</p>
+        <div class="button-group">
+          <a href="dashboard.html"><button>📦 Open Dashboard</button></a>
+        </div>
+         <footer style="margin-top: 30px; padding: 20px; background-color: rgba(0, 0, 0, 0.3); border-radius: 10px;">
+  <h3>📞 Contact & Support</h3>
+  <p>For queries or assistance, contact:</p>
+  <p><strong>Email:</strong> support@cruisesystem.com</p>
+  <p><strong>Phone:</strong> +91-9876543210</p>
+  <p><strong>Office Hours:</strong> 9:00 AM – 6:00 PM IST</p>
+</footer>
+      </div>
+
+     <div id="servicesSection" class="card" style="display:none">
+        <h1>🛳️ Our Services</h1>
+        <div class="section-container">
+          <div class="section">
+            <h2>🍽️ Catering Orders</h2>
+            <p>Choose from a wide range of gourmet meals, snacks, desserts, and beverages delivered directly to your cabin.</p>
+            <img src="https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=800&q=80" alt="Catering Service">
+          </div>
+          <div class="section">
+            <h2>✏️ Stationery Orders</h2>
+            <p>Need notebooks, pens, or drawing kits? Order all your essential supplies while onboard.</p>
+            <img src="https://res.cloudinary.com/purnesh/image/upload/w_1080,f_auto/untitled-11609321216478.jpg" alt="Stationery">
+          </div>
+          <div class="section">
+            <h2>💇 Salon Booking</h2>
+            <p>Enjoy beauty and grooming services at our luxurious cruise salon. Book your appointment today.</p>
+            <img src="https://media.istockphoto.com/id/134052142/photo/hair-salon-situation.jpg?s=612x612&w=0&k=20&c=HM4Tl3ATijpIS1Rv097UHwmZ3OfmqGXkniNLuTCqB0A=" alt="Salon">
+          </div>
+          <div class="section">
+            <h2>🏋️ Fitness Slots</h2>
+            <p>Stay in shape during your voyage! Book a fitness slot and enjoy state-of-the-art facilities.</p>
+            <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=800&q=80" alt="Fitness Gym">
+          </div>
+          <div class="section">
+            <h2>🎬 Movie Booking</h2>
+            <p>Relax and enjoy blockbuster movies with our luxury onboard theater system. Reserve your seats now!</p>
+            <img src="https://akm-img-a-in.tosshub.com/indiatoday/images/story/202501/is-theatre-going-culture-in-india-taking-a-hit-173122208-16x9_0.jpeg?VersionId=lTZShZFILR3qbmiogJGnRUM13Rhb9zC5&size=690:388" alt="Movie Theater">
+          </div>
+          <div class="section">
+            <h2>🎉 Party Hall Reservation</h2>
+            <p>Hosting a celebration? Reserve beautifully decorated party halls for birthdays, reunions, and events.</p>
+            <img src="https://c8.alamy.com/comp/BHR7N0/night-party-on-deck-of-cruise-ship-BHR7N0.jpg" alt="Party Hall">
+          </div>
+        </div>
+      </div>
+
+
+      <div id="profileSection" class="card" style="display:none">
+        <h1>👤 Your Profile</h1>
+        <p><strong>Email:</strong> <span id="profileEmail">Loading...</span></p>
+        <h2 style="margin-top: 20px; color: #1e3a8a;">📋 Your Bookings</h2>
+        <table id="bookingsTable">
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="2">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+ 
+
+  <script>
+    function showSection(section) {
+      document.getElementById('homeSection').style.display = section === 'home' ? 'block' : 'none';
+      document.getElementById('dashboardSection').style.display = section === 'dashboard' ? 'block' : 'none';
+      document.getElementById('servicesSection').style.display = section === 'services' ? 'block' : 'none';
+      document.getElementById('profileSection').style.display = section === 'profile' ? 'block' : 'none';
+    }
+
+    function logout() {
+      firebase.auth().signOut().then(() => window.location.href = 'login.html');
+    }
+
+    firebase.auth().onAuthStateChanged(async user => {
+      if (user) {
+        const email = user.email;
+        document.getElementById("profileEmail").textContent = email;
+
+        const db = firebase.firestore();
+        const bookings = [
+          "cateringOrders",
+          "stationeryOrders",
+          "salonBookings",
+          "fitnessBookings",
+          "movieBookings",
+          "resortBookings",
+          "partyHallBookings"
+        ];
+
+        const bookingsTable = document.querySelector("#bookingsTable tbody");
+        bookingsTable.innerHTML = "";
+
+        for (let collection of bookings) {
+          const snapshot = await db.collection(collection).where("voyager", "==", email).get();
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            const type = collection.replace(/([A-Z])/g, ' $1').replace("Bookings", "").replace("Orders", "").trim();
+            const details = Object.entries(data)
+              .filter(([key]) => key !== 'voyager' && key !== 'time')
+              .map(([key, val]) => {
+                if (Array.isArray(val)) {
+                  return val.map(v => {
+                    return typeof v === 'object'
+                      ? Object.entries(v).map(([k, v2]) => `${k}: ${v2}`).join(', ')
+                      : v;
+                  }).join('<br>');
+                } else if (typeof val === 'object') {
+                  return Object.entries(val).map(([k, v2]) => `${k}: ${v2}`).join(', ');
+                } else {
+                  return `${key}: ${val}`;
+                }
+              }).join('<br>');
+            bookingsTable.innerHTML += `<tr><td>${type}</td><td>${details}</td></tr>`;
+          });
+        }
+
+        if (!bookingsTable.innerHTML) {
+          bookingsTable.innerHTML = "<tr><td colspan='2'>No bookings found.</td></tr>";
+        }
+
+      } else {
+        window.location.href = "login.html";
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Manager Dashboard</title>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+  <script src="../firebase.js"></script>
+
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #2c3e50, #3498db);
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    h2 {
+      margin-top: 20px;
+    }
+    .section {
+      background: #ffffff10;
+      padding: 20px;
+      margin: 20px auto;
+      border-radius: 10px;
+      max-width: 800px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      color: white;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+    }
+    th {
+      background-color: #34495e;
+    }
+  </style>
+</head>
+<body>
+  <h1>📊 Manager Dashboard</h1>
+
+  <div id="resortBookings" class="section">
+    <h2>🏨 Resort Dining Bookings</h2>
+    <table><thead><tr><th>Email</th><th>Resort</th><th>View</th><th>Time</th></tr></thead><tbody></tbody></table>
+  </div>
+
+  <div id="movieBookings" class="section">
+    <h2>🎬 Movie Bookings</h2>
+    <table><thead><tr><th>Email</th><th>Movie</th><th>Seats</th><th>Time</th></tr></thead><tbody></tbody></table>
+  </div>
+
+  <div id="salonBookings" class="section">
+    <h2>💇 Beauty Salon Bookings</h2>
+    <table><thead><tr><th>Email</th><th>Service</th><th>Time</th></tr></thead><tbody></tbody></table>
+  </div>
+
+  <div id="fitnessBookings" class="section">
+    <h2>🏋️ Fitness Center Bookings</h2>
+    <table><thead><tr><th>Email</th><th>Slot</th><th>Time</th></tr></thead><tbody></tbody></table>
+  </div>
+
+  <div id="partyBookings" class="section">
+    <h2>🎉 Party Hall Bookings</h2>
+    <table><thead><tr><th>Email</th><th>Hall</th><th>Guests</th><th>Time</th></tr></thead><tbody></tbody></table>
+  </div>
+
+  <script>
+    function formatTime(ts) {
+      return new Date(ts).toLocaleString();
+    }
+
+    function renderTable(id, rows) {
+      const tbody = document.querySelector(`#${id} tbody`);
+      tbody.innerHTML = rows.map(r => `<tr>${r.map(col => `<td>${col}</td>`).join("")}</tr>`).join("");
+    }
+
+    function loadAllBookings() {
+      const db = firebase.firestore();
+
+      db.collection("resortBookings").get().then(snapshot => {
+        const rows = snapshot.docs.map(doc => {
+          const d = doc.data();
+          return [d.voyager, d.resort, d.view, formatTime(d.time)];
+        });
+        renderTable("resortBookings", rows);
+      });
+
+      db.collection("movieBookings").get().then(snapshot => {
+        const rows = snapshot.docs.map(doc => {
+          const d = doc.data();
+          return [d.voyager, d.movie, d.seats || 1, formatTime(d.time)];
+        });
+        renderTable("movieBookings", rows);
+      });
+
+      db.collection("salonBookings").get().then(snapshot => {
+        const rows = snapshot.docs.map(doc => {
+          const d = doc.data();
+          return [d.voyager, d.service, formatTime(d.time)];
+        });
+        renderTable("salonBookings", rows);
+      });
+
+      db.collection("fitnessBookings").get().then(snapshot => {
+        const rows = snapshot.docs.map(doc => {
+          const d = doc.data();
+          return [d.voyager, d.slot, formatTime(d.time)];
+        });
+        renderTable("fitnessBookings", rows);
+      });
+
+      db.collection("partyHallBookings").get().then(snapshot => {
+        const rows = snapshot.docs.map(doc => {
+          const d = doc.data();
+          return [d.voyager, d.hall, d.people, formatTime(d.time)];
+        });
+        renderTable("partyBookings", rows);
+      });
+    }
+
+    window.onload = loadAllBookings;
+  </script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin - Menu Management</title>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+  <script src="../firebase.js"></script>
+
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f7f9fc;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    .form-section, .item-list {
+      max-width: 600px;
+      margin: 20px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    input, select, button {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    .item-card {
+      background: #ecf0f1;
+      padding: 10px;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 8px 0;
+    }
+    .item-card span {
+      flex: 1;
+    }
+    .item-card button {
+      width: auto;
+      margin-left: 5px;
+      background: #e74c3c;
+    }
+    .item-card button.edit {
+      background: #2ecc71;
+    }
+  </style>
+</head>
+<body>
+  <h1>Admin - Menu Item Management</h1>
+
+  <!-- Add/Edit Item Form -->
+  <div class="form-section">
+    <h3 id="formTitle">Add New Menu Item</h3>
+    <input type="text" id="itemName" placeholder="Item Name">
+    <input type="number" id="itemPrice" placeholder="Price">
+    <select id="itemCategory">
+      <option value="catering">Catering</option>
+      <option value="stationery">Stationery</option>
+    </select>
+    <button onclick="saveItem()" id="submitBtn">Add Item</button>
+  </div>
+
+  <!-- Catering Items -->
+  <div class="item-list">
+    <h3>Catering Menu Items</h3>
+    <div id="cateringItemsContainer"></div>
+  </div>
+
+  <!-- Stationery Items -->
+  <div class="item-list">
+    <h3>Stationery Menu Items</h3>
+    <div id="stationeryItemsContainer"></div>
+  </div>
+
+  <script>
+    let editMode = false;
+    let editItemId = null;
+    let currentEditCategory = null;
+
+    function saveItem() {
+      const name = document.getElementById("itemName").value.trim();
+      const price = parseInt(document.getElementById("itemPrice").value);
+      const category = document.getElementById("itemCategory").value;
+
+      if (!name || isNaN(price)) {
+        alert("Please fill all fields correctly.");
+        return;
+      }
+
+      const data = { name, price, category };
+      const collectionName = category === "catering" ? "menuItems" : "stationeryItemList";
+      const ref = firebase.firestore().collection(collectionName);
+
+      if (editMode) {
+        firebase.firestore().collection(currentEditCategory).doc(editItemId).update(data)
+          .then(() => {
+            alert("Item updated successfully");
+            resetForm();
+            fetchItems();
+          })
+          .catch(error => console.error("Update Error:", error));
+      } else {
+        ref.add(data)
+          .then(() => {
+            alert("Item added successfully");
+            resetForm();
+            fetchItems();
+          })
+          .catch(error => console.error("Add Error:", error));
+      }
+    }
+
+    function resetForm() {
+      document.getElementById("itemName").value = "";
+      document.getElementById("itemPrice").value = "";
+      document.getElementById("itemCategory").value = "catering";
+      document.getElementById("formTitle").textContent = "Add New Menu Item";
+      document.getElementById("submitBtn").textContent = "Add Item";
+      editMode = false;
+      editItemId = null;
+      currentEditCategory = null;
+    }
+
+    function fetchItems() {
+      const cateringContainer = document.getElementById("cateringItemsContainer");
+      const stationeryContainer = document.getElementById("stationeryItemsContainer");
+      cateringContainer.innerHTML = "Loading...";
+      stationeryContainer.innerHTML = "Loading...";
+
+      firebase.firestore().collection("menuItems").get()
+        .then(snapshot => {
+          let cateringHTML = "";
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            const itemHTML = `
+              <div class="item-card">
+                <span><strong>${data.name}</strong> - ₹${data.price} (${data.category})</span>
+                <button class="edit" onclick="editItem('${doc.id}', '${data.name}', ${data.price}, 'menuItems', '${data.category}')">Edit</button>
+                <button onclick="deleteItem('${doc.id}', 'menuItems')">Delete</button>
+              </div>
+            `;
+            cateringHTML += itemHTML;
+          });
+          cateringContainer.innerHTML = cateringHTML || "No catering items found.";
+        });
+
+      firebase.firestore().collection("stationeryItemList").get()
+        .then(snapshot => {
+          let stationeryHTML = "";
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            const itemHTML = `
+              <div class="item-card">
+                <span><strong>${data.name}</strong> - ₹${data.price} (${data.category})</span>
+                <button class="edit" onclick="editItem('${doc.id}', '${data.name}', ${data.price}, 'stationeryItemList', '${data.category}')">Edit</button>
+                <button onclick="deleteItem('${doc.id}', 'stationeryItemList')">Delete</button>
+              </div>
+            `;
+            stationeryHTML += itemHTML;
+          });
+          stationeryContainer.innerHTML = stationeryHTML || "No stationery items found.";
+        });
+    }
+
+    function editItem(id, name, price, collection, category) {
+      editMode = true;
+      editItemId = id;
+      currentEditCategory = collection;
+      document.getElementById("itemName").value = name;
+      document.getElementById("itemPrice").value = price;
+      document.getElementById("itemCategory").value = category;
+      document.getElementById("formTitle").textContent = "Edit Menu Item";
+      document.getElementById("submitBtn").textContent = "Update Item";
+    }
+
+    function deleteItem(id, collection) {
+      if (confirm("Are you sure you want to delete this item?")) {
+        firebase.firestore().collection(collection).doc(id).delete()
+          .then(() => {
+            alert("Item deleted successfully");
+            fetchItems();
+          })
+          .catch(error => console.error("Delete Error:", error));
+      }
+    }
+
+    window.onload = fetchItems;
+  </script>
+</body>
+</html>

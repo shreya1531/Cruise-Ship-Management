@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Register</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #3498db, #6dd5fa);
+      color: #fff;
+      text-align: center;
+      padding: 40px;
+    }
+    h2 {
+      color: #fff;
+    }
+    input {
+      padding: 12px;
+      margin: 10px;
+      width: 250px;
+      border: none;
+      border-radius: 6px;
+    }
+    button {
+      padding: 12px 24px;
+      background: #f1c40f;
+      color: black;
+      border: none;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #d4ac0d;
+    }
+    #message {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+  <script src="firebase.js"></script> <!-- your config file -->
+</head>
+
+<body>
+  <h2>Register as Voyager</h2>
+
+  <input type="text" id="voyagerId" placeholder="Enter Voyager ID" /><br>
+  <input type="email" id="email" placeholder="Enter Email" /><br>
+  <input type="password" id="password" placeholder="Password" /><br>
+  <input type="password" id="confirmPassword" placeholder="Confirm Password" /><br>
+
+  <button onclick="register()">Register</button>
+  <div id="message"></div>
+
+  <script>
+    async function register() {
+      const voyagerId = document.getElementById("voyagerId").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
+      const messageDiv = document.getElementById("message");
+
+      // Clear previous message
+      messageDiv.textContent = "";
+
+      if (!voyagerId || !email || !password || !confirmPassword) {
+        messageDiv.style.color = "red";
+        messageDiv.textContent = "❌ Please fill in all fields.";
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        messageDiv.style.color = "red";
+        messageDiv.textContent = "❌ Passwords do not match.";
+        return;
+      }
+
+      try {
+        // Check if Voyager ID exists in Firestore
+        const docSnap = await firebase.firestore().collection("validVoyagers").doc(voyagerId).get();
+
+        if (!docSnap.exists) {
+          messageDiv.style.color = "red";
+          messageDiv.textContent = "❌ Invalid Voyager ID. Please contact admin.";
+          return;
+        }
+
+        // Proceed to register
+        await firebase.auth().createUserWithEmailAndPassword(email, password);
+
+        messageDiv.style.color = "lightgreen";
+        messageDiv.textContent = "✅ Registration successful!";
+        setTimeout(() => {
+          window.location.href = "login.html";
+        }, 1500);
+
+      } catch (error) {
+        messageDiv.style.color = "red";
+        messageDiv.textContent = "❌ Error: " + error.message;
+      }
+    }
+  </script>
+</body>
+</html>
+

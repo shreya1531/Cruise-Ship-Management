@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Head Cook - Catering Orders</title>
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+  <script src="../firebase.js"></script>
+
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #16a085, #1abc9c);
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    .order-section {
+      max-width: 900px;
+      margin: 20px auto;
+      background: #ffffff10;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      color: white;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #ccc;
+    }
+
+    th {
+      background-color: #1abc9c;
+    }
+
+    td {
+      background-color: #ffffff0c;
+    }
+
+    .small {
+      font-size: 0.9em;
+      color: #ccc;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>👨‍🍳 Head Cook – Catering Orders</h1>
+
+  <div class="order-section">
+    <h2>📦 Ordered Catering Items</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Voyager</th>
+          <th>Items Ordered</th>
+          <th>Total</th>
+          <th>Ordered At</th>
+        </tr>
+      </thead>
+      <tbody id="ordersTableBody">
+        <tr><td colspan="4">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    function formatDate(ts) {
+      return ts ? new Date(ts).toLocaleString() : "N/A";
+    }
+
+    function loadCateringOrders() {
+      const tableBody = document.getElementById("ordersTableBody");
+      const db = firebase.firestore();
+
+      db.collection("cateringOrders").orderBy("time", "desc").get()
+        .then(snapshot => {
+          if (snapshot.empty) {
+            tableBody.innerHTML = "<tr><td colspan='4'>No orders yet.</td></tr>";
+            return;
+          }
+
+          let html = "";
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            const voyager = data.voyager || "Unknown";
+
+            const items = Array.isArray(data.items)
+              ? data.items.map(item => `${item.name} (₹${item.price})`).join("<br>")
+              : "<i style='color:orange;'>No items</i>";
+
+            const total = Array.isArray(data.items)
+              ? data.items.reduce((sum, item) => sum + (item.price || 0), 0)
+              : 0;
+
+            const time = formatDate(data.time);
+
+            html += `
+              <tr>
+                <td>${voyager}</td>
+                <td>${items}</td>
+                <td>₹${total}</td>
+                <td>${time}</td>
+              </tr>
+            `;
+          });
+
+          tableBody.innerHTML = html;
+        })
+        .catch(error => {
+          tableBody.innerHTML = `<tr><td colspan="4" style="color:red;">Error: ${error.message}</td></tr>`;
+        });
+    }
+
+    window.onload = loadCateringOrders;
+  </script>
+</body>
+</html>

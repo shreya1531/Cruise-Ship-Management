@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>📦 Supervisor – Stationery Orders</title>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+  <script src="../firebase.js"></script>
+
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #16a085, #1abc9c);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    table {
+      margin: auto;
+      width: 95%;
+      background: white;
+      color: black;
+      border-collapse: collapse;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 12px;
+    }
+
+    th {
+      background-color: #1abc9c;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+  </style>
+</head>
+<body>
+  <h2>🧾 Supervisor – Ordered Stationery Items</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Voyager</th>
+        <th>Items Ordered</th>
+        <th>Ordered At</th>
+        <th>Total Amount</th>
+      </tr>
+    </thead>
+    <tbody id="ordersTableBody">
+      <tr><td colspan="4">Loading orders...</td></tr>
+    </tbody>
+  </table>
+
+  <script>
+    function loadStationeryOrders() {
+      const tableBody = document.getElementById("ordersTableBody");
+      const db = firebase.firestore();
+
+      db.collection("stationeryOrders").orderBy("time", "desc").get()
+        .then(snapshot => {
+          if (snapshot.empty) {
+            tableBody.innerHTML = "<tr><td colspan='4'>No orders found.</td></tr>";
+            return;
+          }
+
+          let html = "";
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            const items = Array.isArray(data.items)
+              ? data.items.map(i => `${i.name} (₹${i.price})`).join("<br>")
+              : "<i style='color:orange;'>No items listed</i>";
+            
+            const total = Array.isArray(data.items)
+              ? data.items.reduce((sum, i) => sum + (i.price || 0), 0)
+              : 0;
+
+            const dateTime = data.time
+              ? new Date(data.time).toLocaleString()
+              : "N/A";
+
+            html += `
+              <tr>
+                <td>${data.voyager || "Unknown"}</td>
+                <td>${items}</td>
+                <td>${dateTime}</td>
+                <td>₹${total}</td>
+              </tr>
+            `;
+          });
+
+          tableBody.innerHTML = html;
+        })
+        .catch(error => {
+          tableBody.innerHTML = `<tr><td colspan="4" style="color:red;">Error: ${error.message}</td></tr>`;
+        });
+    }
+
+    window.onload = loadStationeryOrders;
+  </script>
+</body>
+</html>
